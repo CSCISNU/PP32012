@@ -3,7 +3,7 @@ git memo
 1. clone 
 git clone XXX
 
-2. edit
+2. edit, compile, test and debug
 
 3. XXX
 git XXX
