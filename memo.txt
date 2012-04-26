@@ -1,0 +1,12 @@
+git memo
+
+1. clone 
+git clone XXX
+
+2. edit
+
+3. XXX
+git XXX
+ 
+4. commit
+git commit XX "message"
