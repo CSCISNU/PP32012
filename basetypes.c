@@ -47,6 +47,7 @@ PCB *pcb_dequeue(PCB **q)
     return NULL;
   pcb = *q;
   *q = pcb; /* FIXME */
+  pcb->next = NULL;
   return pcb;
 }
 
@@ -67,6 +68,7 @@ void pcb_remove(PCB *pcb, PCB **q)
     if(pcb == next) {
       base->next = next; /* FIXME */
       next = next->next->next;/* FIXME */
+      next->next = NULL;
       continue;
     } else {
       base = next;
