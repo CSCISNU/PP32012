@@ -77,6 +77,28 @@ void pcb_remove(PCB *pcb, PCB **q)
   }
 }
 
+/* Mokuteki: q no nakakara start_time ga t no monowo subete sakujo suru */
+void pcb_removeAllStartFrom(int t, PCB **q)
+{
+  PCB *next, *base;
+  if (*q == NULL){
+      return;
+  }
+  base = *q;
+  next = base->next;
+  while (next != NULL) {
+    if(next->start_time == t) {
+      base->next = next;
+      next = next->next->next;
+      next->next = NULL;
+      break;
+    } else {
+      base = next;
+      next = next->next;
+    }
+  }
+}
+
 /* Mokuteki: PCB no queue no sentou top ga ataeraretara queue no juni PCB wo hyouji suru */
 void pcb_print_list(PCB *top)
 {
