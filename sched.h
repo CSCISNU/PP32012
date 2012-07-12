@@ -25,3 +25,13 @@ extern PCB *sched_ready_queue;
 extern PCB *sched_start_list;
 extern int sched_last_pid;
 extern int current_clock;
+
+#define MAX_CLOCK 50		/* time limit of simulation */
+
+void monitor_initialize ();
+void monitor_allocation();
+
+void monitor_process_allocate(PCB *);
+void monitor_process_terminate(PCB *);
+PCB** monitor_allocation_history(void);
+double monitor_average_turnaround_time (void);

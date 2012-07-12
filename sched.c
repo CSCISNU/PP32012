@@ -138,6 +138,7 @@ sched_dispatcher (PCB *to)
   to->waiting_time = 0;
   sched_current_process = to;
   pcb_remove(to, &sched_ready_queue);
+  monitor_process_allocate(to);
 }
 
 /* Mokuteki: kaishi jikoku s, jikkou jikan r no atarashii process wo tukuru */
@@ -158,6 +159,7 @@ sched_terminate_current_process()
   if (! pcb)
     return -1;
   pcb_remove(pcb, &sched_ready_queue);
+  monitor_process_terminate(pcb);
   // printf("%3d: pid %d is terminated\n", current_clock, pcb->pid);
   sched_current_process = NULL;
   return 0;
@@ -191,4 +193,59 @@ sched_RR(PCB *i, PCB *j)
     return i;
   else
     return j;
+}
+
+PCB *finished_list = NULL;
+int mon_current_clock = 0;
+
+/*
+ * monitor part
+ */
+PCB *monitor_activation_history[MAX_CLOCK];
+
+void
+monitor_initialize ()
+{
+  int i;
+  mon_current_clock = -1;
+  for (i = 0; i < MAX_CLOCK; i++)
+    monitor_activation_history[i] = NULL;
+}
+
+void
+monitor_process_allocate(PCB *pcb)
+{
+  int i;
+  for(i=mon_current_clock+1; i <= current_clock; i++)
+    monitor_activation_history[i] = pcb;
+  mon_current_clock = current_clock;
+}
+
+void
+monitor_process_terminate(PCB *pcb)
+{
+  pcb->executed_time=current_clock;
+  pcb_enqueue(pcb, &finished_list);
+}
+
+PCB **
+monitor_allocation_history(void)
+{
+  return monitor_activation_history;
+}
+
+double
+monitor_average_turnaround_time (void)
+{
+  int num_processes = 0;
+  int turn_around = 0;
+ PCB *p = finished_list;
+  while (p) {
+    num_processes++;
+    turn_around += p->executed_time - p->start_time;
+    p = p->next;
+  }
+  if (num_processes==0)
+    return 1000000;
+  return (double)turn_around/(double)num_processes;
 }
